@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.tr.controller.UserController;
 import com.tr.exception.InvalidInputException;
 import com.tr.model.User;
 import com.tr.model.UserProfile;
 import com.tr.utils.InMemoryStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,18 +19,22 @@ import static com.tr.builder.UserProfileBuilder.anUserProfileBuilder;
 @Component
 public class UserService {
 
-    @Autowired
-    private InMemoryStore inMemoryStore;
+    @Autowired private InMemoryStore inMemoryStore;
+    @Autowired private Validator validator;
+
+    private static Logger logger = LoggerFactory.getLogger(UserService.class);
 
     public UserProfile addUser(User user) {
         user.setId(UUID.randomUUID());
         inMemoryStore.getUserMap().put(user.getId(), user);
+        inMemoryStore.getUserMapByUserName().put(user.getUserName(), user);
         return anUserProfileBuilder().withUser(user).build();
     }
 
     public UserProfile getUser(UUID userId) throws InvalidInputException {
-        if (!validateUserId(userId)) {
-            throw new InvalidInputException("Invalid user i`d");
+        if (!validator.validateUserId(userId)) {
+            logger.error("Unable to get user. Invalid User id - " + userId);
+            throw new InvalidInputException("Invalid user id");
         }
         User user = inMemoryStore.getUserMap().get(userId);
         UserProfile userProfile = anUserProfileBuilder().withUser(user).build();
@@ -44,7 +51,7 @@ public class UserService {
     }
 
     public boolean addFollows(UUID userId, UUID followId) {
-        if (!validateUserId(userId) || !validateUserId(followId)) {
+        if (!validator.validateUserId(userId) || !validator.validateUserId(followId)) {
             return false;
         }
 
@@ -66,7 +73,7 @@ public class UserService {
     }
 
     public boolean removeFollows(UUID userId, UUID followId) {
-        if (!validateUserId(userId) || !validateUserId(followId)) {
+        if (!validator.validateUserId(userId) || !validator.validateUserId(followId)) {
             return false;
         }
 
@@ -87,7 +94,7 @@ public class UserService {
     }
 
     public boolean removeUser(UUID userId) {
-        if (!validateUserId(userId)) {
+        if (!validator.validateUserId(userId)) {
             return false;
         }
 
@@ -104,14 +111,6 @@ public class UserService {
             inMemoryStore.getUserFollowing().get(uuid).remove(userId);
         });
         inMemoryStore.getUserFollowedBy().remove(userId);
-
-        return true;
-    }
-
-    private boolean validateUserId(UUID userId) {
-        if (!inMemoryStore.getUserMap().containsKey(userId)) {
-            return false;
-        }
 
         return true;
     }

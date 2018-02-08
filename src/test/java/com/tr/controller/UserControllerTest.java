@@ -84,18 +84,6 @@ public class UserControllerTest extends AbstractControllerTest {
         validateUser(user, userProfileResponseEntity.getBody());
     }
 
-    private void createUser(User user) {
-        ResponseEntity<UserProfile> userResponse = template.postForEntity(baseURL + Constants.USER_TEMPLATE_PATH, user, UserProfile.class);
-        validateUser(user, userResponse.getBody());
-        user.setId(userResponse.getBody().getId());
-    }
-
-    private void validateUser(User expectedUser, User actualUser) {
-        assertEquals(expectedUser.getFirstName(), actualUser.getFirstName());
-        assertEquals(expectedUser.getLastName(), actualUser.getLastName());
-        assertEquals(expectedUser.getUserName(), actualUser.getUserName());
-    }
-
     private void validateFollowersAndFollowing(User user, int expectedFollowing, int expectedFollowers) {
         ResponseEntity<UserProfile> userProfileResponseEntity = template.getForEntity(baseURL + Constants.USER_PATH, UserProfile.class, user.getId());
         assertEquals(expectedFollowing, userProfileResponseEntity.getBody().getFollowing());

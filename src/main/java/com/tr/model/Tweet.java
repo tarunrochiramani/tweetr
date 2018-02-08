@@ -1,41 +1,11 @@
 package com.tr.model;
 
-import java.sql.Timestamp;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.springframework.stereotype.Component;
-
-@Component
-public class Tweet {
-    private UUID id;
-    private User createdBy;
-    private Timestamp createdDate;
+public final class Tweet extends AbstractTweet {
     private String text;
-    private String[] mentions;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public Timestamp getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Timestamp createdDate) {
-        this.createdDate = createdDate;
-    }
+    private List<String> mentions = new ArrayList<>();
 
     public String getText() {
         return text;
@@ -45,11 +15,11 @@ public class Tweet {
         this.text = text;
     }
 
-    public String[] getMentions() {
+    public List<String> getMentions() {
         return mentions;
     }
 
-    public void setMentions(String[] mentions) {
+    public void setMentions(List<String> mentions) {
         this.mentions = mentions;
     }
 }
