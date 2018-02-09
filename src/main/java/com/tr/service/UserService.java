@@ -2,9 +2,9 @@ package com.tr.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
-import com.tr.controller.UserController;
 import com.tr.exception.InvalidInputException;
 import com.tr.model.User;
 import com.tr.model.UserProfile;
@@ -101,17 +101,37 @@ public class UserService {
         inMemoryStore.getUserMap().remove(userId);
 
         List<UUID> followingUUIDS = inMemoryStore.getUserFollowing().get(userId);
-        followingUUIDS.forEach(uuid -> {
-            inMemoryStore.getUserFollowedBy().get(uuid).remove(userId);
-        });
+        if (followingUUIDS != null) {
+            followingUUIDS.forEach(uuid -> {
+                inMemoryStore.getUserFollowedBy().get(uuid).remove(userId);
+            });
+        }
         inMemoryStore.getUserFollowing().remove(userId);
 
+
         List<UUID> followedByUUIDS = inMemoryStore.getUserFollowedBy().get(userId);
-        followedByUUIDS.forEach(uuid -> {
-            inMemoryStore.getUserFollowing().get(uuid).remove(userId);
-        });
+        if (followedByUUIDS != null) {
+            followedByUUIDS.forEach(uuid -> {
+                inMemoryStore.getUserFollowing().get(uuid).remove(userId);
+            });
+        }
         inMemoryStore.getUserFollowedBy().remove(userId);
 
+
         return true;
+    }
+
+    public List<UserProfile> getAllUsers() {
+        Set<UUID> userIds = inMemoryStore.getUserMap().keySet();
+        List<UserProfile> users = new ArrayList<>();
+        userIds.forEach(uuid -> {
+            try {
+                users.add(getUser(uuid));
+            } catch (InvalidInputException e) {
+                logger.error("Error loading users", e);
+            }
+        });
+
+        return users;
     }
 }

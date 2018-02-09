@@ -1,7 +1,5 @@
 package com.tr.controller;
 
-import javax.xml.ws.Response;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -11,13 +9,10 @@ import com.tr.model.AbstractTweet;
 import com.tr.model.InputTweet;
 import com.tr.model.Tweet;
 import com.tr.service.TweetService;
-import com.tr.utils.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -59,8 +54,8 @@ public class TweetController {
     }
 
     @RequestMapping(path = TWEET_PATH, method = RequestMethod.GET)
-    public ResponseEntity<Tweet> getTweet(@PathVariable String id) {
-        Tweet tweet = null;
+    public ResponseEntity<AbstractTweet> getTweet(@PathVariable String id) {
+        AbstractTweet tweet = null;
         try {
             tweet = tweetService.getTweet(UUID.fromString(id));
         } catch (InvalidInputException e) {

@@ -1,6 +1,5 @@
 package com.tr.model;
 
-import java.sql.Timestamp;
 import java.util.UUID;
 
 public class AbstractTweet {

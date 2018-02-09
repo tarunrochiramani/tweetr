@@ -1,7 +1,6 @@
 package com.tr.service;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 import java.util.UUID;
@@ -47,13 +46,13 @@ public class TweetService {
         return tweet;
     }
 
-    public Tweet getTweet(UUID tweetId) throws InvalidInputException {
+    public AbstractTweet getTweet(UUID tweetId) throws InvalidInputException {
         if (!validator.validateTweetId(tweetId)) {
             logger.error("Unable to get Tweet. Invalid Tweet id - " + tweetId);
             throw new InvalidInputException("Invalid input");
         }
 
-        return (Tweet)inMemoryStore.getTweetMap().get(tweetId);
+        return inMemoryStore.getTweetMap().get(tweetId);
     }
 
     public List<AbstractTweet> getUserTweets(UUID userId) throws InvalidInputException {

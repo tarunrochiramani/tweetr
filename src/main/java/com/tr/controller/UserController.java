@@ -1,5 +1,7 @@
 package com.tr.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import com.tr.exception.InvalidInputException;
@@ -17,13 +19,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.tr.utils.Constants.USERS_PATH;
 import static com.tr.utils.Constants.USER_FOLLOW;
 import static com.tr.utils.Constants.USER_PATH;
 import static com.tr.utils.Constants.USER_TEMPLATE_PATH;
 
 @RestController
 public class UserController {
-
     @Autowired private UserService userService;
     private static Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -60,14 +62,14 @@ public class UserController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @RequestMapping(path = USER_FOLLOW, method = RequestMethod.PUT)
-    public ResponseEntity followUser(@PathVariable String userId, @PathVariable String followId) {
+    @RequestMapping(path = USER_FOLLOW, method = RequestMethod.POST)
+    public ResponseEntity<String> followUser(@PathVariable String userId, @PathVariable String followId) {
         boolean success = userService.addFollows(UUID.fromString(userId), UUID.fromString(followId));
         if (!success) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK.toString(), HttpStatus.OK);
     }
 
     @RequestMapping(path = USER_FOLLOW, method = RequestMethod.DELETE)
@@ -78,6 +80,13 @@ public class UserController {
         }
 
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(path = USERS_PATH, method = RequestMethod.GET)
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = new ArrayList<>();
+        users.addAll(userService.getAllUsers());
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
 }

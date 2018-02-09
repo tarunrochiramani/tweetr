@@ -1,10 +1,9 @@
 package com.tr.utils;
 
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 import java.util.UUID;
 
 import com.tr.model.AbstractTweet;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class InMemoryStore {
-    private Map<UUID, User> userMap = new HashMap<>();
+    private Map<UUID, User> userMap = new LinkedHashMap<>();
     private Map<String, User> userMapByUserName = new HashMap<>();
     private Map<UUID, List<UUID>> userFollowing = new HashMap<>();
     private Map<UUID, List<UUID>> userFollowedBy = new HashMap<>();

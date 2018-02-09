@@ -1,7 +1,5 @@
 package com.tr.builder;
 
-import java.util.UUID;
-
 import com.tr.model.User;
 import org.apache.commons.lang3.builder.Builder;
 

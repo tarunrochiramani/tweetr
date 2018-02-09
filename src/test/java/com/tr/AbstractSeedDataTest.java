@@ -1,16 +1,15 @@
-package com.tr.controller;
+package com.tr;
 
-import java.net.URL;
+import java.util.UUID;
 
 import com.tr.model.User;
 import com.tr.model.UserProfile;
 import com.tr.utils.Constants;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.embedded.LocalServerPort;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,31 +18,28 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AbstractControllerTest {
-
-    @LocalServerPort
-    protected int port;
-
-    protected URL base;
+public class AbstractSeedDataTest {
     protected String baseURL;
     protected HttpHeaders headers;
+    static TestRestTemplate template;
 
-    @Before
+    @BeforeClass
+    public static void setupRestTemplate() {
+        template = new TestRestTemplate(new RestTemplateBuilder().rootUri("http://localhost:8080").build());
+    }
+
+        @Before
     public void setUpBase() throws Exception {
-        this.base = new URL("http://localhost:" + port + "/rest");
-        this.baseURL = "http://localhost:" + port;
+        this.baseURL = "http://localhost:8080";
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
     }
 
-    @Autowired
-    protected TestRestTemplate template;
 
-    protected void createUser(User user) {
+    protected UUID createUser(User user) {
         ResponseEntity<UserProfile> userResponse = template.postForEntity(baseURL + Constants.USER_TEMPLATE_PATH, user, UserProfile.class);
         validateUser(user, userResponse.getBody());
-        user.setId(userResponse.getBody().getId());
+        return userResponse.getBody().getId();
     }
 
     protected void validateUser(User expectedUser, User actualUser) {
