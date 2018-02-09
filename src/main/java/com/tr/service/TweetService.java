@@ -1,11 +1,14 @@
 package com.tr.service;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 import java.util.UUID;
 
 import com.tr.builder.TweetBuilder;
 import com.tr.exception.InvalidInputException;
+import com.tr.model.AbstractTweet;
 import com.tr.model.InputTweet;
 import com.tr.model.Tweet;
 import com.tr.utils.InMemoryStore;
@@ -35,12 +38,40 @@ public class TweetService {
         inMemoryStore.getTweetMap().put(tweet.getId(), tweet);
         List<UUID> tweetIds = inMemoryStore.getUsersTweets().get(tweet.getCreatedBy().getId());
         if (tweetIds == null) {
-            tweetIds = new ArrayList<>();
+            tweetIds = new Stack<>();
             inMemoryStore.getUsersTweets().put(tweet.getCreatedBy().getId(), tweetIds);
         }
         tweetIds.add(tweet.getId());
 
         tweetScanMentionService.scanAndAddMentions(tweet.getId());
         return tweet;
+    }
+
+    public Tweet getTweet(UUID tweetId) throws InvalidInputException {
+        if (!validator.validateTweetId(tweetId)) {
+            logger.error("Unable to get Tweet. Invalid Tweet id - " + tweetId);
+            throw new InvalidInputException("Invalid input");
+        }
+
+        return (Tweet)inMemoryStore.getTweetMap().get(tweetId);
+    }
+
+    public List<AbstractTweet> getUserTweets(UUID userId) throws InvalidInputException {
+        if (!validator.validateUserId(userId)) {
+            logger.error("Unable to get user. Invalid User id - " + userId);
+            throw new InvalidInputException("Invalid input");
+        }
+
+        List<AbstractTweet> tweets = new ArrayList<>();
+        List<UUID> tweetIds = inMemoryStore.getUsersTweets().get(userId);
+
+
+        //TODO: Pagination
+        for (int count = tweetIds.size()-1; count >= 0; count --) {
+            tweets.add(inMemoryStore.getTweetMap().get(tweetIds.get(count)));
+        }
+
+
+        return tweets;
     }
 }

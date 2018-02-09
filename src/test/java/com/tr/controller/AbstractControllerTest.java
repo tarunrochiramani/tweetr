@@ -28,16 +28,12 @@ public class AbstractControllerTest {
 
     protected URL base;
     protected String baseURL;
-    protected static HttpHeaders headers;
+    protected HttpHeaders headers;
 
     @Before
     public void setUpBase() throws Exception {
         this.base = new URL("http://localhost:" + port + "/rest");
         this.baseURL = "http://localhost:" + port;
-    }
-
-    @BeforeClass
-    public static void setUpHeaders() {
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
     }
