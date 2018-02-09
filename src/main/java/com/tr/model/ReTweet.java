@@ -1,6 +1,6 @@
 package com.tr.model;
 
-public final class ReTweet extends AbstractTweet {
+public final class ReTweet extends BasicTweet {
     private Tweet originalTweet;
 
     public Tweet getOriginalTweet() {

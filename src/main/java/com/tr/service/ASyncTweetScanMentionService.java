@@ -23,7 +23,7 @@ public class ASyncTweetScanMentionService {
             return;
         }
 
-        Tweet tweet = (Tweet) inMemoryStore.getTweetMap().get(tweetId);
+        Tweet tweet = (Tweet) inMemoryStore.getBasicTweetMap().get(tweetId);
 
         List<String> strings = helper.scanMentions(tweet.getText());
         if (!strings.isEmpty()) {

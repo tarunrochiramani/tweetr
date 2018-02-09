@@ -19,7 +19,7 @@ public class Validator {
     }
 
     public boolean validateTweetId(UUID tweeId) {
-        if (!inMemoryStore.getTweetMap().containsKey(tweeId)) {
+        if (!inMemoryStore.getBasicTweetMap().containsKey(tweeId)) {
             return false;
         }
 

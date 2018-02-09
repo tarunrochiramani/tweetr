@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.UUID;
 
 import com.tr.exception.InvalidInputException;
-import com.tr.model.AbstractTweet;
+import com.tr.model.BasicTweet;
+import com.tr.model.DetailedTweet;
 import com.tr.model.InputTweet;
 import com.tr.model.Tweet;
 import com.tr.service.TweetService;
@@ -54,8 +55,8 @@ public class TweetController {
     }
 
     @RequestMapping(path = TWEET_PATH, method = RequestMethod.GET)
-    public ResponseEntity<AbstractTweet> getTweet(@PathVariable String id) {
-        AbstractTweet tweet = null;
+    public ResponseEntity<DetailedTweet> getTweet(@PathVariable String id) {
+        DetailedTweet tweet = null;
         try {
             tweet = tweetService.getTweet(UUID.fromString(id));
         } catch (InvalidInputException e) {
@@ -67,8 +68,8 @@ public class TweetController {
     }
 
     @RequestMapping(path = USER_TWEETS, method = RequestMethod.GET)
-    public ResponseEntity<List<AbstractTweet>> getUserTweets(@PathVariable String userId) {
-        List<AbstractTweet> tweets = new ArrayList<>();
+    public ResponseEntity<List<BasicTweet>> getUserTweets(@PathVariable String userId) {
+        List<BasicTweet> tweets = new ArrayList<>();
         try {
             tweets.addAll(tweetService.getUserTweets(UUID.fromString(userId)));
         } catch (InvalidInputException e) {

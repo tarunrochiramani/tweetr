@@ -2,7 +2,7 @@ package com.tr.model;
 
 import java.util.UUID;
 
-public class AbstractTweet {
+public class BasicTweet {
     private UUID id;
     private User createdBy;
     private Long timestamp;

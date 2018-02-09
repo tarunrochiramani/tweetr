@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.tr.model.AbstractTweet;
+import com.tr.model.BasicTweet;
+import com.tr.model.DetailedTweet;
 import com.tr.model.User;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,8 @@ public class InMemoryStore {
     private Map<UUID, List<UUID>> userFollowedBy = new HashMap<>();
 
     private Map<UUID, List<UUID>> usersTweets = new HashMap<>();
-    private Map<UUID, AbstractTweet> tweetMap = new HashMap<>();
+    private Map<UUID, BasicTweet> basicTweetMap = new HashMap<>();
+    private Map<UUID, DetailedTweet> detailedTweetMap = new HashMap<>();
 
     public Map<UUID, User> getUserMap() {
         return userMap;
@@ -36,11 +38,19 @@ public class InMemoryStore {
         return usersTweets;
     }
 
-    public Map<UUID, AbstractTweet> getTweetMap() {
-        return tweetMap;
+    public Map<UUID, BasicTweet> getBasicTweetMap() {
+        return basicTweetMap;
     }
 
     public Map<String, User> getUserMapByUserName() {
         return userMapByUserName;
+    }
+
+    public Map<UUID, DetailedTweet> getDetailedTweetMap() {
+        return detailedTweetMap;
+    }
+
+    public void setDetailedTweetMap(Map<UUID, DetailedTweet> detailedTweetMap) {
+        this.detailedTweetMap = detailedTweetMap;
     }
 }

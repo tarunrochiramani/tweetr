@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.tr.builder.UserBuilder;
+import com.tr.model.DetailedTweet;
 import com.tr.model.InputTweet;
 import com.tr.model.Tweet;
 import com.tr.model.User;
@@ -64,7 +65,7 @@ public class TweetControllerTest extends AbstractControllerTest {
     public void canGetATweet() {
         Tweet createdTweet = postTweet("Hello lets Tweet", userA.getId()).getBody();
 
-        ResponseEntity<Tweet> retrievedTweetResponse = template.getForEntity(TWEET_PATH, Tweet.class, createdTweet.getId());
+        ResponseEntity<DetailedTweet> retrievedTweetResponse = template.getForEntity(TWEET_PATH, DetailedTweet.class, createdTweet.getId());
         assertEquals(HttpStatus.OK, retrievedTweetResponse.getStatusCode());
         assertNotNull(retrievedTweetResponse.getBody());
         assertEquals(createdTweet.getId(), retrievedTweetResponse.getBody().getId());

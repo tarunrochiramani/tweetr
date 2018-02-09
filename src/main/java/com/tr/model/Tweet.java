@@ -3,7 +3,7 @@ package com.tr.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Tweet extends AbstractTweet {
+public class Tweet extends BasicTweet {
     private String text;
     private List<String> mentions = new ArrayList<>();
 
