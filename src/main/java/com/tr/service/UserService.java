@@ -26,7 +26,7 @@ public class UserService {
     private static Logger logger = LoggerFactory.getLogger(UserService.class);
 
     public UserProfile addUser(User user) {
-        user.setId(UUID.randomUUID());
+        user.setId(UUID.nameUUIDFromBytes(user.getUserName().getBytes()));
         inMemoryStore.getUserMap().put(user.getId(), user);
         inMemoryStore.getUserMapByUserName().put(user.getUserName(), user);
         inMemoryStore.getUserActivity().put(user.getId(), new Stack<>());

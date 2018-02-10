@@ -1,6 +1,7 @@
 package com.tr.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 import java.util.UUID;
@@ -13,6 +14,7 @@ import com.tr.model.ReTweet;
 import com.tr.model.Tweet;
 import com.tr.model.User;
 import com.tr.utils.InMemoryStore;
+import com.tr.utils.TweetTimeStampDescendingOrderComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,9 +118,14 @@ public class TweetService {
         List<BasicTweet> tweets = new ArrayList<>();
         Stack<BasicTweet> basicTweets = inMemoryStore.getUserActivity().get(userId);
         while (!basicTweets.empty()) {
-            tweets.add(basicTweets.pop());
+            BasicTweet tweet = basicTweets.pop();
+            if (tweets.contains(tweet)) {
+                continue;
+            }
+            tweets.add(tweet);
         }
 
+        Collections.sort(tweets, new TweetTimeStampDescendingOrderComparator());
         return tweets;
     }
 

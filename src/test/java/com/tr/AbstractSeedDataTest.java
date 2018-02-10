@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static com.tr.builder.UserBuilder.anUserBuilder;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
@@ -22,6 +23,9 @@ public class AbstractSeedDataTest {
     protected String baseURL;
     protected HttpHeaders headers;
     static TestRestTemplate template;
+
+    protected static User userA = anUserBuilder().withUserName("tarun").withFirstName("Tarun").withLastName("Rochiramani").build();
+    protected static User userB = anUserBuilder().withUserName("ameya").withFirstName("Ameya").withLastName("Vasani").build();
 
     @BeforeClass
     public static void setupRestTemplate() {
