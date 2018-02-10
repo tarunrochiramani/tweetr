@@ -14,4 +14,7 @@ public class Constants {
     public static final String USER_TWEETS = BASE_PATH + "/user/{userId}/tweets";
 
     public static final String HEADER_USER_ID_PARAM = "user_id";
+
+    public static final String KAFKA_NOTIFICATION_TOPIC = "notify.t";
+    public static final String KAFKA_NOTIFICATION_GROUP = "notify";
 }

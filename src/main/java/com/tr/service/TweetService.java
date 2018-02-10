@@ -27,6 +27,7 @@ public class TweetService {
     @Autowired private Validator validator;
     @Autowired private InMemoryStore inMemoryStore;
     @Autowired private ASyncTweetScanMentionService tweetScanMentionService;
+    @Autowired private ASyncTweetNotificationService tweetNotificationService;
     private static Logger logger = LoggerFactory.getLogger(TweetService.class);
 
 
@@ -49,6 +50,7 @@ public class TweetService {
         tweetIds.add(tweet.getId());
 
         tweetScanMentionService.scanAndAddMentions(tweet.getId());
+        tweetNotificationService.sendNotification(tweet.getId());
         return tweet;
     }
 
@@ -72,8 +74,10 @@ public class TweetService {
 
 
         //TODO: Pagination
-        for (int count = tweetIds.size()-1; count >= 0; count --) {
-            tweets.add(inMemoryStore.getBasicTweetMap().get(tweetIds.get(count)));
+        if (tweetIds != null && !tweetIds.isEmpty()) {
+            for (int count = tweetIds.size() - 1; count >= 0; count--) {
+                tweets.add(inMemoryStore.getBasicTweetMap().get(tweetIds.get(count)));
+            }
         }
 
 

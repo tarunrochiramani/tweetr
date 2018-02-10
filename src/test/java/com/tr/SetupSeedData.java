@@ -30,7 +30,7 @@ public class SetupSeedData extends AbstractSeedDataTest {
 
     @Test
     public void createRandomUsers() {
-        for(int i=1; i<=10000; i++) {
+        for(int i=1; i<=10; i++) {
             User randomUser = anUserBuilder().withUserName("user-" + i).withFirstName("user_first_" + i).withLastName("user_last_" + i).build();
             UUID randomUserId = createUser(randomUser);
             if (i%2 == 0) {
