@@ -27,12 +27,14 @@ public class ASyncTweetNotificationService {
 
         BasicTweet basicTweet = inMemoryStore.getBasicTweetMap().get(tweetId);
         List<UUID> followedByIDs = inMemoryStore.getUserFollowedBy().get(basicTweet.getCreatedBy().getId());
-        followedByIDs.parallelStream().forEach(uuid -> {
-            Notification notification = new Notification();
-            notification.setTweetId(basicTweet.getId().toString());
-            notification.setUserId(uuid.toString());
-            sender.send(Constants.KAFKA_NOTIFICATION_TOPIC, notification);
-        });
+        if (followedByIDs != null) {
+            followedByIDs.parallelStream().forEach(uuid -> {
+                Notification notification = new Notification();
+                notification.setTweetId(basicTweet.getId().toString());
+                notification.setUserId(uuid.toString());
+                sender.send(Constants.KAFKA_NOTIFICATION_TOPIC, notification);
+            });
+        }
 
     }
 }

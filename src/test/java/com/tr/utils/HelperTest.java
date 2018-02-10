@@ -22,8 +22,8 @@ public class HelperTest {
         assertNotNull(strings);
         assertFalse(strings.isEmpty());
         assertEquals(2, strings.size());
-        assertEquals("@tarun", strings.get(0));
-        assertEquals("@something", strings.get(1));
+        assertEquals("tarun", strings.get(0));
+        assertEquals("something", strings.get(1));
     }
 
 
@@ -34,9 +34,9 @@ public class HelperTest {
         assertNotNull(strings);
         assertFalse(strings.isEmpty());
         assertEquals(3, strings.size());
-        assertEquals("@tarun_5", strings.get(0));
-        assertEquals("@something.5", strings.get(1));
-        assertEquals("@someone-thing_1", strings.get(2));
+        assertEquals("tarun_5", strings.get(0));
+        assertEquals("something.5", strings.get(1));
+        assertEquals("someone-thing_1", strings.get(2));
 
     }
 

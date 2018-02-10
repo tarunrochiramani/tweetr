@@ -18,7 +18,7 @@ public class Helper {
         Pattern pattern = Pattern.compile(patternText);
         Matcher matcher = pattern.matcher(text);
         while (matcher.find()) {
-            tokens.add(matcher.group());
+            tokens.add(matcher.group().substring(1));
         }
         return tokens;
 
