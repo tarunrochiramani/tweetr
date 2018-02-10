@@ -9,7 +9,9 @@ import com.tr.exception.InvalidInputException;
 import com.tr.model.BasicTweet;
 import com.tr.model.DetailedTweet;
 import com.tr.model.InputTweet;
+import com.tr.model.ReTweet;
 import com.tr.model.Tweet;
+import com.tr.model.User;
 import com.tr.utils.InMemoryStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static com.tr.builder.DetailedTweetBuilder.aDetailTweetBuilder;
+import static com.tr.builder.ReTweetBuilder.aReTweetBuilder;
 import static com.tr.builder.TweetBuilder.aTweetBuilder;
 
 @Component
@@ -40,16 +43,38 @@ public class TweetService {
 
         inMemoryStore.getBasicTweetMap().put(tweet.getId(), tweet);
         inMemoryStore.getDetailedTweetMap().put(tweet.getId(), aDetailTweetBuilder().withTweet(tweet).build());
-        List<UUID> tweetIds = inMemoryStore.getUsersTweets().get(tweet.getCreatedBy().getId());
-        if (tweetIds == null) {
-            tweetIds = new Stack<>();
-            inMemoryStore.getUsersTweets().put(tweet.getCreatedBy().getId(), tweetIds);
-        }
-        tweetIds.add(tweet.getId());
+        addTweetToUserTweets(tweet.getCreatedBy(), tweet.getId());
 
         tweetScanMentionService.scanAndAddMentions(tweet.getId());
         tweetNotificationService.sendNotification(tweet.getId());
         return tweet;
+    }
+
+    public ReTweet addReTweet(UUID userId, UUID tweetId) throws InvalidInputException {
+        if (!validator.validateUserId(userId)) {
+            logger.error("Unable to get user. Invalid User id - " + userId);
+            throw new InvalidInputException("Invalid input");
+        }
+
+        if (!validator.validateTweetId(tweetId)) {
+            logger.error("Unable to get Tweet. Invalid Tweet id - " + tweetId);
+            throw new InvalidInputException("Invalid input");
+        }
+
+        BasicTweet basicTweet = inMemoryStore.getBasicTweetMap().get(tweetId);
+        Tweet originalTweet = null;
+        if(basicTweet instanceof ReTweet) {
+            originalTweet = ((ReTweet) basicTweet).getOriginalTweet();
+        } else {
+            originalTweet = (Tweet) basicTweet;
+        }
+
+        ReTweet reTweet = aReTweetBuilder().withCreatedBy(inMemoryStore.getUserMap().get(userId)).withTweet(originalTweet).build();
+        inMemoryStore.getBasicTweetMap().put(reTweet.getId(), reTweet);
+        addTweetToUserTweets(reTweet.getCreatedBy(), reTweet.getId());
+
+        tweetNotificationService.sendNotification(reTweet.getId());
+        return reTweet;
     }
 
     public DetailedTweet getTweet(UUID tweetId) throws InvalidInputException {
@@ -95,5 +120,14 @@ public class TweetService {
         }
 
         return tweets;
+    }
+
+    private void addTweetToUserTweets(User createdBy, UUID id) {
+        List<UUID> tweetIds = inMemoryStore.getUsersTweets().get(createdBy.getId());
+        if (tweetIds == null) {
+            tweetIds = new ArrayList<>();
+            inMemoryStore.getUsersTweets().put(createdBy.getId(), tweetIds);
+        }
+        tweetIds.add(id);
     }
 }

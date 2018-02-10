@@ -6,8 +6,11 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.tr.builder.UserBuilder;
+import com.tr.model.BasicTweet;
 import com.tr.model.DetailedTweet;
+import com.tr.model.InputReTweet;
 import com.tr.model.InputTweet;
+import com.tr.model.ReTweet;
 import com.tr.model.Tweet;
 import com.tr.model.User;
 import com.tr.utils.Constants;
@@ -21,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static com.tr.utils.Constants.HEADER_USER_ID_PARAM;
+import static com.tr.utils.Constants.RETWEET_PATH;
 import static com.tr.utils.Constants.TWEET_PATH;
 import static com.tr.utils.Constants.USER_TWEETS;
 import static org.junit.Assert.assertEquals;
@@ -94,14 +98,44 @@ public class TweetControllerTest extends AbstractControllerTest {
 
     }
 
+    @Test
+    public void canCreateReTweet() {
+        Tweet createdTweet = postTweet("Hello lets Tweet", userA.getId()).getBody();
+
+        ResponseEntity<ReTweet> reTweetResponseEntity = postReTweet(createdTweet, userA.getId());
+        assertNotNull(reTweetResponseEntity);
+        assertEquals(HttpStatus.OK, reTweetResponseEntity.getStatusCode());
+        assertNotNull(reTweetResponseEntity.getBody());
+        assertNotNull(reTweetResponseEntity.getBody().getId());
+        assertNotNull(reTweetResponseEntity.getBody().getCreatedBy());
+        assertNotNull(reTweetResponseEntity.getBody().getTimestamp());
+        assertNotNull(reTweetResponseEntity.getBody().getOriginalTweet());
+        assertEquals(createdTweet.getId(), reTweetResponseEntity.getBody().getOriginalTweet().getId());
+        assertEquals(createdTweet.getText(), reTweetResponseEntity.getBody().getOriginalTweet().getText());
+        assertEquals(createdTweet.getCreatedBy(), reTweetResponseEntity.getBody().getOriginalTweet().getCreatedBy());
+        assertEquals(createdTweet.getTimestamp(), reTweetResponseEntity.getBody().getOriginalTweet().getTimestamp());
+    }
+
     private ResponseEntity<Tweet> postTweet(String text, UUID userId) {
         InputTweet inputTweet = new InputTweet();
         inputTweet.setText(text);
+        addUserIdHeader(userId);
+        HttpEntity<InputTweet> request = new HttpEntity<>(inputTweet, headers);
+        return template.postForEntity(Constants.CREATE_TWEET, request, Tweet.class);
+    }
+
+    private ResponseEntity<ReTweet> postReTweet(Tweet tweet, UUID userId) {
+        InputReTweet inputReTweet = new InputReTweet();
+        inputReTweet.setTweetId(tweet.getId().toString());
+        addUserIdHeader(userId);
+        HttpEntity<InputReTweet> request = new HttpEntity<>(inputReTweet, headers);
+        return template.postForEntity(Constants.RETWEET_PATH, request, ReTweet.class);
+    }
+
+    private void addUserIdHeader(UUID userId) {
         if (headers.containsKey(HEADER_USER_ID_PARAM)) {
             headers.remove(HEADER_USER_ID_PARAM);
         }
         headers.add(HEADER_USER_ID_PARAM, userId.toString());
-        HttpEntity<InputTweet> request = new HttpEntity<>(inputTweet, headers);
-        return template.postForEntity(Constants.CREATE_TWEET, request, Tweet.class);
     }
 }

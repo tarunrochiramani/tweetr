@@ -7,7 +7,9 @@ import java.util.UUID;
 import com.tr.exception.InvalidInputException;
 import com.tr.model.BasicTweet;
 import com.tr.model.DetailedTweet;
+import com.tr.model.InputReTweet;
 import com.tr.model.InputTweet;
+import com.tr.model.ReTweet;
 import com.tr.model.Tweet;
 import com.tr.service.TweetService;
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.tr.utils.Constants.CREATE_TWEET;
 import static com.tr.utils.Constants.HEADER_USER_ID_PARAM;
+import static com.tr.utils.Constants.RETWEET_PATH;
 import static com.tr.utils.Constants.TWEET_PATH;
 import static com.tr.utils.Constants.USER_FEEDS;
 import static com.tr.utils.Constants.USER_TWEETS;
@@ -41,7 +44,7 @@ public class TweetController {
             produces= MediaType.APPLICATION_JSON_UTF8_VALUE, consumes=MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Tweet> createTweet(@RequestHeader(value = HEADER_USER_ID_PARAM) String userid, @RequestBody InputTweet aTweet) {
         if (StringUtils.isBlank(userid)) {
-            logger.error("Header does not contain User Id. Invalid Header send to create a Tweet.");
+            logger.error("Header does not contain User Id. Invalid Header sent to create a Tweet.");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -53,6 +56,24 @@ public class TweetController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(createdTweet, HttpStatus.OK);
+    }
+
+    @RequestMapping(path = RETWEET_PATH, method = RequestMethod.POST)
+    public ResponseEntity<ReTweet> createReTweet(@RequestHeader(value = HEADER_USER_ID_PARAM) String userid, @RequestBody InputReTweet inputReTweet) {
+        if (StringUtils.isBlank(userid)) {
+            logger.error("Header does not contain User Id. Invalid Header sent for ReTweet.");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        ReTweet createdReTweet = null;
+        try {
+            createdReTweet = tweetService.addReTweet(UUID.fromString(userid), UUID.fromString(inputReTweet.getTweetId()));
+        } catch (InvalidInputException e) {
+            logger.error("Unable to add ReTweet." , e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(createdReTweet, HttpStatus.OK);
+
     }
 
     @RequestMapping(path = TWEET_PATH, method = RequestMethod.GET)
