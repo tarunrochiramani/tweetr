@@ -27,7 +27,7 @@ The Activity fetching could be further enhaced to consider more parameters that 
 
 
 # APi's
-1. GET /rest/users  --> Retrieves all users
+1. GET /rest/users  --> Retrieves all users (Pagination is PENDING)
 
 2. GET /rest/user/{id} --> Retrieves a User
 
@@ -50,9 +50,9 @@ Request Body required {"text" : }
 7. POST /rest/reTweet -> Creates a ReTweet. Requires "user_id" (UUID of the user creating the tweet) in the Header
   Request Body required {"tweetId" : }
   
-8. GET /rest/user/{userId}/tweets  --> Retrieves all Tweets and ReTweets by the given user in descending order of creation. i.e most recently created is first.
+8. GET /rest/user/{userId}/tweets  --> Retrieves all Tweets and ReTweets by the given user in descending order of creation. i.e most recently created is first. (Pagination is PENDING)
 
-9. GET /rest/user/{id}/feed -> Retrieves most recent Tweets and ReTweets of users that the given {userId} follows. Also includes Tweets where the given {userId} was mentioned. 
+9. GET /rest/user/{id}/feed -> Retrieves most recent Tweets and ReTweets of users that the given {userId} follows. Also includes Tweets where the given {userId} was mentioned. (Pagination is PENDING)
 
 
 # Design
@@ -121,3 +121,4 @@ Datastore
 3. Concurrent collections / concurrency handling. 
 4. API for Comments
 5. Recommendations Algorithm
+6. Implement the pending Pagination for certain APi's. 
