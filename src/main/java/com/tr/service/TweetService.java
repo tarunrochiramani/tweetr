@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Stack;
 import java.util.UUID;
 
-import com.tr.builder.DetailedTweetBuilder;
-import com.tr.builder.TweetBuilder;
 import com.tr.exception.InvalidInputException;
 import com.tr.model.BasicTweet;
 import com.tr.model.DetailedTweet;
@@ -80,6 +78,21 @@ public class TweetService {
             }
         }
 
+
+        return tweets;
+    }
+
+    public List<BasicTweet> getUserFeed(UUID userId) throws InvalidInputException {
+        if (!validator.validateUserId(userId)) {
+            logger.error("Unable to get user. Invalid User id - " + userId);
+            throw new InvalidInputException("Invalid input");
+        }
+
+        List<BasicTweet> tweets = new ArrayList<>();
+        Stack<BasicTweet> basicTweets = inMemoryStore.getUserActivity().get(userId);
+        while (!basicTweets.empty()) {
+            tweets.add(basicTweets.pop());
+        }
 
         return tweets;
     }

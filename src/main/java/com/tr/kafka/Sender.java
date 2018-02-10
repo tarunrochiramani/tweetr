@@ -14,7 +14,7 @@ public class Sender {
     private KafkaTemplate<String, Notification> kafkaTemplate;
 
     public void send(String topic, Notification notification) {
-        logger.info("sending payload='{}' to topic='{}'", notification, topic);
+        logger.debug("sending payload='{}' to topic='{}'", notification, topic);
         kafkaTemplate.sendDefault(notification);
     }
 }

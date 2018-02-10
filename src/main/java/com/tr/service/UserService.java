@@ -3,6 +3,7 @@ package com.tr.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 import java.util.UUID;
 
 import com.tr.exception.InvalidInputException;
@@ -28,6 +29,7 @@ public class UserService {
         user.setId(UUID.randomUUID());
         inMemoryStore.getUserMap().put(user.getId(), user);
         inMemoryStore.getUserMapByUserName().put(user.getUserName(), user);
+        inMemoryStore.getUserActivity().put(user.getId(), new Stack<>());
         return anUserProfileBuilder().withUser(user).build();
     }
 

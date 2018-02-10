@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.tr.utils.Constants.CREATE_TWEET;
 import static com.tr.utils.Constants.HEADER_USER_ID_PARAM;
 import static com.tr.utils.Constants.TWEET_PATH;
+import static com.tr.utils.Constants.USER_FEEDS;
 import static com.tr.utils.Constants.USER_TWEETS;
 
 
@@ -74,6 +75,20 @@ public class TweetController {
             tweets.addAll(tweetService.getUserTweets(UUID.fromString(userId)));
         } catch (InvalidInputException e) {
             logger.error("Unable to get Tweets for the given user. Invalid id - " + userId);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+
+        return new ResponseEntity<>(tweets, HttpStatus.OK);
+    }
+
+    @RequestMapping(path = USER_FEEDS, method = RequestMethod.GET)
+    public ResponseEntity<List<BasicTweet>> getUserFeed(@PathVariable String id) {
+        List<BasicTweet> tweets = new ArrayList<>();
+        try {
+            tweets.addAll(tweetService.getUserFeed(UUID.fromString(id)));
+        } catch (InvalidInputException e) {
+            logger.error("Unable to get Tweets for the given user. Invalid id - " + id);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 

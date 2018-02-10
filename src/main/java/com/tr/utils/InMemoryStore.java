@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
-import com.tr.model.ActivityFeed;
 import com.tr.model.BasicTweet;
 import com.tr.model.DetailedTweet;
 import com.tr.model.User;
@@ -24,7 +24,7 @@ public class InMemoryStore {
     private Map<UUID, BasicTweet> basicTweetMap = new HashMap<>();
     private Map<UUID, DetailedTweet> detailedTweetMap = new HashMap<>();
 
-    private Map<UUID, Stack<ActivityFeed>> userActivity = new HashMap<>();
+    private Map<UUID, Stack<BasicTweet>> userActivity = new ConcurrentHashMap<>();
 
     public Map<UUID, User> getUserMap() {
         return userMap;
@@ -58,7 +58,7 @@ public class InMemoryStore {
         this.detailedTweetMap = detailedTweetMap;
     }
 
-    public Map<UUID, Stack<ActivityFeed>> getUserActivity() {
+    public Map<UUID, Stack<BasicTweet>> getUserActivity() {
         return userActivity;
     }
 }

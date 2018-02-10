@@ -23,7 +23,7 @@ public class Notification {
         this.userId = userId;
     }
 
-//    public String toString() {
-//        return "Notifying user - " + userId + " with Tweet -  " + tweetId;
-//    }
+    public String toString() {
+        return "Notifying user - " + userId + " with Tweet -  " + tweetId;
+    }
 }

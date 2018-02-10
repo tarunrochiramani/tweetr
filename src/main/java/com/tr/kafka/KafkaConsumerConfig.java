@@ -34,12 +34,7 @@ public class KafkaConsumerConfig {
     public ConcurrentKafkaListenerContainerFactory<String, Notification> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, Notification> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
-        factory.setConcurrency(1);
+        factory.setConcurrency(50);
         return factory;
-    }
-
-    @Bean
-    public Receiver receiver() {
-        return new Receiver();
     }
 }
