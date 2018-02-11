@@ -114,6 +114,11 @@ Datastore
     b. Recommendation analysis
     c. Analytics 
     
+# Running this app
+1. Start Zookeeper and Kafka cluster
+2. Start the application --> mvn spring-boot:run
+3. Run "SetupSeedData" test class to add users
+4. Run "AddTweets" test class to add Tweets
 
 # Enhancements
 1. The current POC could be futher enhanced to connect to the above DB's.
