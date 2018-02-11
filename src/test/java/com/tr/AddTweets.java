@@ -1,7 +1,6 @@
 package com.tr;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,8 +10,9 @@ import com.tr.model.InputTweet;
 import com.tr.model.ReTweet;
 import com.tr.model.Tweet;
 import com.tr.utils.Constants;
-import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -25,6 +25,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AddTweets extends AbstractSeedDataTest {
 
     @Test
