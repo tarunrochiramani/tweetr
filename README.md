@@ -56,7 +56,7 @@ Request Body required {"text" : }
 
 
 # Design
-Option 1 (Brute Force).
+### Option 1 (Brute Force) ###
 
 Given the fact that there are atleast 10K uses, tweeting 10 messages averagely a day, lets do some maths
 Daily  ~100,000 messages will be sent in total
@@ -77,10 +77,10 @@ Activity Feed would have to be a query to the Tweets table joined with the users
 
 The above clearly shows that DB Scaling is going to be required in 3-4 years. Oracle has the ability to scale vertically and partition data as well. However, it would be prefered to scale horizontally.
 
-##The above design would not scale well in future years. 
+**The above design would not scale well in future years.**
 
 
-Option 2 (Slightly optimized). 
+### Option 2 (Slightly optimized) ###
 
 Instead of Activity Feed being a query to the Tweets table, what if for every Tweet posted, the system could ASYNCHRONOUSLY append an activity on every interested individual user's activity stream data store? 
 
@@ -97,7 +97,7 @@ The above could work well until the number of users dont increase. Even when the
 But when the number of Users increase to about 1M, Horizontal Scaling is must and ORACLE would NOT be the right choice.
 
 
-Option 3 (Preferred).
+### Option 3 (Preferred) ###
 Activity Feed is processed ASYNCHRONOUSLY by the system whenever a tweet is posted, and appends the tweet on every interested individual user's activity stream store
 
 Scope
