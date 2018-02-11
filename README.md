@@ -40,12 +40,12 @@ The Activity fetching could be further enhaced to consider more parameters that 
 Request Body required {"text" : }
 
 6. GET /rest/tweet/{id} --> Retrieves a Tweet, which includes 
-    i. its Id
-   ii. User who created this tweet.
-  iii. Text
-   iv. TimeStamp
-    v. List of valid people mentioned in this tweet using "@<username>"
-   vi. Comments (Not implemented the feature to add a comment).
+    * its Id
+    * User who created this tweet.
+    * Text
+    * TimeStamp
+    * List of valid people mentioned in this tweet using "@<username>"
+    * Comments (Not implemented the feature to add a comment).
 
 7. POST /rest/reTweet -> Creates a ReTweet. Requires "user_id" (UUID of the user creating the tweet) in the Header
   Request Body required {"tweetId" : }
@@ -110,9 +110,9 @@ Datastore
 1. Cassandra -- to store all the Tweets and Activty Stream per user.
 2. Graph DB -- to store all users and their relations
 3. Kakfa -- cluster of queues and multi-threaded consumers to examine Tweets under different topics to
-    a. Insert Activity of follower / mentioned in the tweet (achieved by current POC)
-    b. Recommendation analysis
-    c. Analytics 
+    * Insert Activity of follower / mentioned in the tweet (achieved by current POC)
+    * Recommendation analysis
+    * Analytics 
     
 # Running this app
 1. Start Zookeeper and Kafka cluster
