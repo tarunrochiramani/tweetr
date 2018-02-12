@@ -11,6 +11,7 @@ public class Constants {
     public static final String CREATE_TWEET = BASE_PATH + "/tweet";
     public static final String TWEET_PATH = BASE_PATH + "/tweet/{id}";
     public static final String RETWEET_PATH = BASE_PATH + "/reTweet";
+    public static final String TWEET_COMMENT_PATH = BASE_PATH + "/tweet/{id}/comment";
 
     public static final String USER_TWEETS = BASE_PATH + "/user/{userId}/tweets";
     public static final String USER_FEEDS = BASE_PATH + "/user/{id}/feed";

@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Stack;
 import java.util.UUID;
 
+import com.tr.builder.CommentBuilder;
 import com.tr.exception.InvalidInputException;
 import com.tr.model.BasicTweet;
+import com.tr.model.Comment;
 import com.tr.model.DetailedTweet;
 import com.tr.model.InputTweet;
 import com.tr.model.ReTweet;
@@ -20,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static com.tr.builder.CommentBuilder.aCommentBuilder;
 import static com.tr.builder.DetailedTweetBuilder.aDetailTweetBuilder;
 import static com.tr.builder.ReTweetBuilder.aReTweetBuilder;
 import static com.tr.builder.TweetBuilder.aTweetBuilder;
@@ -136,5 +139,25 @@ public class TweetService {
             inMemoryStore.getUsersTweets().put(createdBy.getId(), tweetIds);
         }
         tweetIds.add(id);
+    }
+
+    public DetailedTweet addComment(UUID userId, UUID tweetId, InputTweet comment) throws InvalidInputException {
+        if (!validator.validateUserId(userId)) {
+            logger.error("Unable to get user. Invalid User id - " + userId);
+            throw new InvalidInputException("Invalid input - userId");
+        }
+
+        if (!validator.validateTweetId(tweetId)) {
+            logger.error("Unable to get tweet. Invalid tweet id - " + tweetId);
+            throw new InvalidInputException("Invalid input - tweetId");
+        }
+
+        Comment aComment = aCommentBuilder().withInputTweet(comment)
+                .withCommentingUser(inMemoryStore.getUserMap().get(userId))
+                .build();
+
+        DetailedTweet detailedTweet = inMemoryStore.getDetailedTweetMap().get(tweetId);
+        detailedTweet.getComments().add(aComment);
+        return detailedTweet;
     }
 }

@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.tr.utils.Constants.CREATE_TWEET;
 import static com.tr.utils.Constants.HEADER_USER_ID_PARAM;
 import static com.tr.utils.Constants.RETWEET_PATH;
+import static com.tr.utils.Constants.TWEET_COMMENT_PATH;
 import static com.tr.utils.Constants.TWEET_PATH;
 import static com.tr.utils.Constants.USER_FEEDS;
 import static com.tr.utils.Constants.USER_TWEETS;
@@ -43,10 +44,7 @@ public class TweetController {
     @RequestMapping(path = CREATE_TWEET, method = RequestMethod.POST,
             produces= MediaType.APPLICATION_JSON_UTF8_VALUE, consumes=MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Tweet> createTweet(@RequestHeader(value = HEADER_USER_ID_PARAM) String userid, @RequestBody InputTweet aTweet) {
-        if (StringUtils.isBlank(userid)) {
-            logger.error("Header does not contain User Id. Invalid Header sent to create a Tweet.");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        if (validateHeaderHasUserID(userid, "Invalid Header sent to create a Tweet.")) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         Tweet createdTweet = null;
         try {
@@ -60,10 +58,8 @@ public class TweetController {
 
     @RequestMapping(path = RETWEET_PATH, method = RequestMethod.POST)
     public ResponseEntity<ReTweet> createReTweet(@RequestHeader(value = HEADER_USER_ID_PARAM) String userid, @RequestBody InputReTweet inputReTweet) {
-        if (StringUtils.isBlank(userid)) {
-            logger.error("Header does not contain User Id. Invalid Header sent for ReTweet.");
+        if (validateHeaderHasUserID(userid, "Invalid Header sent for ReTweet."))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
 
         ReTweet createdReTweet = null;
         try {
@@ -115,6 +111,33 @@ public class TweetController {
 
 
         return new ResponseEntity<>(tweets, HttpStatus.OK);
+    }
+
+    @RequestMapping(path = TWEET_COMMENT_PATH, method = RequestMethod.PUT)
+    public ResponseEntity<DetailedTweet> addComments(@RequestHeader(value = HEADER_USER_ID_PARAM) String userid,
+                                                     @PathVariable String id,
+                                                     @RequestBody InputTweet comment) {
+        validateHeaderHasUserID(userid, "Invalid Header sent for Adding Comment");
+
+        DetailedTweet createdTweet = null;
+        try {
+            createdTweet = tweetService.addComment(UUID.fromString(userid), UUID.fromString(id), comment);
+        } catch (InvalidInputException e) {
+            logger.error("Unable to add comment." , e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(createdTweet, HttpStatus.OK);
+    }
+
+
+    private boolean validateHeaderHasUserID(@RequestHeader(value = HEADER_USER_ID_PARAM) String userid, String additionalErrorMsg) {
+        if (StringUtils.isBlank(userid)) {
+            String errorMsg = "Header does not contain User Id." + additionalErrorMsg;
+            logger.error(errorMsg);
+            return true;
+        }
+        return false;
     }
 
 }

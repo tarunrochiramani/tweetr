@@ -28,6 +28,7 @@ import static com.tr.utils.Constants.RETWEET_PATH;
 import static com.tr.utils.Constants.TWEET_PATH;
 import static com.tr.utils.Constants.USER_TWEETS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -115,6 +116,28 @@ public class TweetControllerTest extends AbstractControllerTest {
         assertEquals(createdTweet.getCreatedBy(), reTweetResponseEntity.getBody().getOriginalTweet().getCreatedBy());
         assertEquals(createdTweet.getTimestamp(), reTweetResponseEntity.getBody().getOriginalTweet().getTimestamp());
     }
+
+    @Test
+    public void canAddComment() {
+        Tweet createdTweet = postTweet("Hello lets Tweet", userA.getId()).getBody();
+        InputTweet inputTweet = new InputTweet();
+        inputTweet.setText("Sample Comment");
+        addUserIdHeader(userB.getId());
+        HttpEntity<InputTweet> request = new HttpEntity<>(inputTweet, headers);
+
+        template.put(Constants.TWEET_COMMENT_PATH, request, createdTweet.getId());
+
+        ResponseEntity<DetailedTweet> retrievedTweetResponse = template.getForEntity(TWEET_PATH, DetailedTweet.class, createdTweet.getId());
+        assertNotNull(retrievedTweetResponse);
+        assertNotNull(retrievedTweetResponse.getBody());
+        assertEquals(HttpStatus.OK, retrievedTweetResponse.getStatusCode());
+        assertNotNull(retrievedTweetResponse.getBody().getComments());
+        assertFalse(retrievedTweetResponse.getBody().getComments().isEmpty());
+        assertEquals(1, retrievedTweetResponse.getBody().getComments().size());
+        assertEquals("Sample Comment", retrievedTweetResponse.getBody().getComments().get(0).getComment());
+        assertEquals(userB, retrievedTweetResponse.getBody().getComments().get(0).getCommentingUser());
+    }
+
 
     private ResponseEntity<Tweet> postTweet(String text, UUID userId) {
         InputTweet inputTweet = new InputTweet();
